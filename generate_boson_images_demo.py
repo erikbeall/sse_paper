@@ -10,14 +10,14 @@ import matplotlib
 dsload = lambda filename: np.load(filename, allow_pickle=True, encoding='latin1').tolist()
 
 # thermals raw is not calibrated by in-FOV BBs, only by Flir internal routine
-ima=(dsload('/home/nano/codebase/thermometry/mar_validations/apr11_acq/faces/image.boson.raw.002.npy')['thermals_raw'][0].astype(np.float32)-27315)/100 + 1.25
+ima=(dsload('/home/nano/codebase/thermometry/mar_validations/apr11_acq/faces/image.boson.raw.002.npy')['thermals_raw'][0].astype(np.float32)-27315)/100 + 1.74
 kern = gen_empirical_kernel(133, 0.5, 0.305)
 cima=correction(np.copy(ima), kern)
 # distance was 0.643 meters
 distance = dsload('/home/nano/codebase/thermometry/mar_validations/apr11_acq/faces/image.boson.raw.002.npy')['dist']/1000.0
 # crop
 ima=ima[:300,125:450]
-cima=cima[:300,125:450]+0.5
+cima=cima[:300,125:450]
 
 # FI data already calibrated with in-FOV blackbodies (and already mSSE-corrected with older mSSE correction - new data must be acquired without either correction)
 # distance for micro80 was roughly 1 meter
