@@ -56,7 +56,8 @@ xdata=np.linspace(1/np.power(np.min(orig_radii50), alpha), 1/np.power(np.max(ori
 
 
 # 5 is fits for each with slope and r-value
-fig, axes = plt.subplots(1, 3, figsize=(12, 6))
+#fig, axes = plt.subplots(1, 3, figsize=(12, 6))
+fig, axes = plt.subplots(1, 4, figsize=(16, 6))
 c=0
 axes[c].plot(alphas, resid35, 'b')
 axes[c].plot(alphas, resid50, 'r')
@@ -78,7 +79,7 @@ axes[c].grid(True)
 axes[c].set_title("b)", loc="left", fontsize=24)
 axes[c].set_xlabel('$Radii^{-%.02f}$'%alpha, fontsize=18)
 axes[c].set_ylabel(r"Pct(r)", fontsize=18, rotation=90)
-axes[c].legend([r"$T_{T}$ = 80$^\circ$C", "m=%.2f, r=%.3f"%(p80[0],r80)], fontsize=14)
+axes[c].legend([r"$T_{T}$ = 80$^\circ$C", r"$\alpha$=%.2f, m=%.2f"%(alpha, p80[0])], fontsize=14)
 axes[c].tick_params(axis='both', which='major', labelsize=16)
 
 c=2
@@ -93,8 +94,25 @@ axes[c].grid(True)
 axes[c].set_title("c)", loc="left", fontsize=24)
 axes[c].set_xlabel('$Radii^{-%.2f}$'%alpha, fontsize=18)
 axes[c].set_ylabel(r"Pct(r)", fontsize=18, rotation=90)
-axes[c].legend([r"$T_{T}$ = 80$^\circ$C", "m=%.2f, r=%.3f"%(p80[0],r80)], fontsize=14)
+axes[c].legend([r"$T_{T}$ = 80$^\circ$C", r"$\alpha$=%.2f, m=%.2f"%(alpha, p80[0])], fontsize=14)
 axes[c].tick_params(axis='both', which='major', labelsize=16)
+
+'''
+'''
+c=3
+[radii35, maximas35, bgs35, maximas35_c, bgs35_c] = np.load('wrong_results_stage2_round1_35C.npy')
+tgt35_c = np.polyfit(1/np.power(radii35[radii35>2.5], 0.5), maximas35_c[radii35>2.5], 1)[1]
+pcts35 = (tgt35_c-maximas35)/(tgt35_c - bgs35)
+pcts35_c = (tgt35_c-maximas35_c)/(tgt35_c - bgs35_c)
+axes[c].plot(radii35, maximas35, marker='.', color='k', linewidth=0)
+axes[c].plot(radii35, maximas35_c, marker='.', color='darkgrey', linewidth=0)
+axes[c].grid(True)
+axes[c].set_title("d)", loc="left", fontsize=24)
+axes[c].set_xlabel('Radii', fontsize=18)
+axes[c].set_ylabel(r"$T_{meas}$ $^\circ$C", fontsize=18, rotation=90)
+axes[c].legend([r"$T_{meas}$", r"$T_{corr}$ $\alpha$=0.65 m=0.35"], fontsize=12)
+axes[c].tick_params(axis='both', which='major', labelsize=16)
+
 
 #fig.tight_layout()
 fig.subplots_adjust(wspace=0.5)

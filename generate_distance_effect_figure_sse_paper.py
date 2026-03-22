@@ -18,6 +18,14 @@ so Pct(r)=0.33*np.power(r, -0.5)
 If skin is 35C and ambient is 20C, that becomes:
 deviation = 15*Pct(r) = 4.95*np.power(r, -0.5)
 
+deviation = (T_T - T_{BG}) * m/r^alpha
+pixel_size_on_target(D) = D*tan(iFOV)
+pixels_fitting_in_L = L/pixel_size_on_target
+r = 0.5*pixels_fitting_in_L
+r = 0.5*L/(D*tan(iFOV)
+
+therefore: deviation = (TT-TBG)*m* (2*D*tan(iFOV)/L)^alpha
+
 # sunny lens iFOV is 25/80
 '''
 
@@ -28,6 +36,7 @@ pixels_to_cover_40mm = 0.04/pixel_size_at_distances
 radii_eyeonly = pixels_to_cover_40mm/2.0
 deviation_vs_radii = 4.95*np.power(radii_eyeonly, -0.5)
 max_distance_cutoff = np.where(pixel_size_at_distances>0.005)[0][0]
+# r = 0.02/(D*tan(iFOV))
 
 # do same for micro80 with Sunny lens and alpha=1, slope=0.15
 pixel_size_at_distances_sunny25 = distances * np.tan((25/80)*np.pi/180)
