@@ -2,6 +2,34 @@
 import numpy as np
 import cv2
 
+def gen_empirical_kernel(width=9, alpha=1, slope=0.25): #r_offset=1):
+    # width must be odd
+    assert (width-1)//2 == int(round((width-1)/2.0)), 'Must use odd-valued width'
+    r = np.arange(width)
+    # apply circular mask so the kernel is circular
+    a,b = ((width-1)/2.0, (width-1)/2.0)
+    y,x = np.ogrid[-a:width-a,-b:width-b]
+    mask = (x*x + y*y) <= a*b+2 #1.5
+    kernel2d = np.zeros((width, width))
+    # 0.159 factor is 1/2pi
+    weight_r = lambda radius, alpha: 0.1591549 * alpha * np.power(radius, -float(alpha)-2)
+    for x in range(width):
+        for y in range(width):
+            radius = np.sqrt((a-x)**2 + (b-y)**2)
+            # apply a weight for every pixel except central
+            weight = slope*weight_r(radius, alpha) if radius>0 else 0
+            if np.isinf(weight) or np.isnan(weight) or radius>a+1:
+                weight=0.0
+            kernel2d[x,y] = weight
+    # no normalization - the alpha and fitted slope with the weight equation are all that are needed
+    #kernel2d=kernel2d/np.sum(kernel2d)
+    return kernel2d
+
+def get_truncated_kernel(kernel, width):
+    r=(width-1)//2
+    c=kernel.shape[0]//2
+    return np.copy(kernel)[max(0,c-r):c+r+1, max(0,c-r):c+r+1]
+
 def get_hole_radius_and_edge(ncrop, return_vals_when_fail=False):
     # median blur to reduce noise
     ncrop=cv2.medianBlur(ncrop, 5)
